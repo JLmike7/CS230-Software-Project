@@ -3,6 +3,7 @@ package edu.ycp.casino.client;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 
+import edu.ycp.casino.shared.Roulette;
 import edu.ycp.casino.shared.Slots;
 import edu.ycp.casino.shared.SlotsController;
 
@@ -33,10 +34,21 @@ public class Casino implements EntryPoint {
 			RootLayoutPanel.get().add(slotsView);
 		} else {
 			RouletteView rouletteView = new RouletteView();
+			Roulette model = new Roulette();
+			RouletteController controller = new RouletteController();
+			
+			rouletteView.setModel(model); 
+			controller.setModel(model);
+			controller.setView(rouletteView); 
+			rouletteView.setController(controller);
+			
+			
+		
+			
 			
 			RootLayoutPanel.get().add(rouletteView);
 			
-			rouletteView.drawOnCanvas();
+			//rouletteView.drawOnCanvas();
 		}
 	}
 }
