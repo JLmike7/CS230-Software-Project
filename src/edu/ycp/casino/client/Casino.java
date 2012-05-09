@@ -1,5 +1,7 @@
 package edu.ycp.casino.client;
 
+import java.util.ArrayList;
+
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -10,6 +12,7 @@ import edu.ycp.casino.shared.Player;
 import edu.ycp.casino.shared.Roulette;
 import edu.ycp.casino.shared.Slots;
 import edu.ycp.casino.shared.SlotsController;
+import edu.ycp.casino.shared.cardgame.poker.Table;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
@@ -21,6 +24,7 @@ public class Casino implements EntryPoint, MainMenuEvents, GameViewCallback {
 	private Widget currentView;
 	private SlotsViewGWT slotsView;
 	private RouletteView rouletteView;
+	private PokerViewGWT pokerView;
 
 	
 	/**
@@ -35,6 +39,7 @@ public class Casino implements EntryPoint, MainMenuEvents, GameViewCallback {
 		
 		initSlotsView(player);
 		initRouletteView();
+		initPokerView(player);
 		
 		selectView(mainMenu);
 	}
@@ -55,6 +60,18 @@ public class Casino implements EntryPoint, MainMenuEvents, GameViewCallback {
 		model.spin();
 		
 		slotsView.update(model, null);
+	}
+	//Methods to set up the 4 various MVC GUI's for games
+	private void initPokerView(Player p) {
+		ArrayList<Player> players=new ArrayList<Player>();
+		players.add(p);
+		Table pokerTable = new Table(players);
+		pokerView= new PokerViewGWT(pokerTable);
+		PokerController pokerController = new PokerController(pokerTable,pokerView);
+		pokerView.setController(pokerController);
+		pokerView.setCallback(this);
+		
+		pokerView.update(pokerTable, null);
 	}
 	
 	private void initRouletteView() {

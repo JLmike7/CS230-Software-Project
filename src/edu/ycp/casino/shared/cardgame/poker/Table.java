@@ -2,11 +2,12 @@ package edu.ycp.casino.shared.cardgame.poker;
 
 import java.util.ArrayList;
 
+import edu.ycp.casino.shared.Game;
 import edu.ycp.casino.shared.Player;
 import edu.ycp.casino.shared.cardgame.Dealer;
 import edu.ycp.casino.shared.cardgame.Hand;
 
-public class Table {
+public class Table extends Game{
 	
 	private final int ANTI=5;
 	private HandComperator comperator;
@@ -107,6 +108,11 @@ public class Table {
 		return (dealer.getBettingRound()==-1);
 	}
 	
+	public void fillEmptySeats(){
+		int emptySeats=5-this.players.size();
+		for (int x=0; x<emptySeats; x++);
+			this.players.add(new Player());
+	}
 	public int nonFoldedPlayers(){
 		int x=0;
 		for(Player player : players){

@@ -43,21 +43,24 @@ public class PokerViewGWT extends Composite implements Observer{
 	private boolean showNewGameAlert;
 	private Table table;
 	private Label lblMessage;
-	private com.google.gwt.user.client.ui.Image image;
-	private com.google.gwt.user.client.ui.Image image_1;
-	private com.google.gwt.user.client.ui.Image image_2;
-	private com.google.gwt.user.client.ui.Image image_3;
-	private com.google.gwt.user.client.ui.Image image_6;
-	private com.google.gwt.user.client.ui.Image image_4;
-	private com.google.gwt.user.client.ui.Image image_5;
+	private com.google.gwt.user.client.ui.Image com1;
+	private com.google.gwt.user.client.ui.Image com2;
+	private com.google.gwt.user.client.ui.Image com3;
+	private com.google.gwt.user.client.ui.Image com4;
+	private com.google.gwt.user.client.ui.Image com5;
+	private com.google.gwt.user.client.ui.Image hand1;
+	private com.google.gwt.user.client.ui.Image hand2;
 	private NumberLabel<Integer> lblMin;
 	private NumberLabel<Integer> lblMax;
 	private IntegerBox betBox;
+	private PokerController controller;
+	private GameViewCallback callback;
 	
 	// TODO: add fields to store state
 	
 	// constructor
-	public PokerViewGWT() {
+	public PokerViewGWT(Table _table) {
+		this.table=_table;
 		LayoutPanel layout=new LayoutPanel();
 		initWidget(layout);
 		layout.setSize("489px", "461px");
@@ -66,50 +69,21 @@ public class PokerViewGWT extends Composite implements Observer{
 			@Override
 			public void onClick(ClickEvent event) {
 				//is bet button
-				int bet=betBox.getValue();
-				table.getCurrentPlayer().setHoldingBet(bet,lblMin.getValue());
-				if(table.getCurrentPlayer().takeHoldingBet()){
-					if(allIn)
-						table.getPot().setMaxBet(bet);
-					if (table.getPot().add(bet)){
-						lblMessage.setText("Player "+table.getCurrentPlayerNum()+" added $"+bet+" to the pot");
-						table.iterateCurrentPlayer();
-					}
-					else
-						
-						lblMessage.setText("Invalid bet.");
-					allIn=false;
-				}
-				else
-					lblMessage.setText("Not enough funds.");
-				clearBet();
+				controller.bet();
 			}
 		};
 		ClickHandler checkHandler=new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				//is check button
-				if (table.getPot().getMinBet()==0){
-					table.getPot().add(0);
-					table.getCurrentPlayer().setHoldingBet(0,0);
-					lblMessage.setText("Player "+table.getCurrentPlayerNum()+" checks");
-					table.iterateCurrentPlayer();
-					clearBet();
-				}
-				else
-					lblMessage.setText("Invalid bet.");
+				controller.check();
 			}
 		};
 		ClickHandler foldHandler=new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				//is fold button
-				table.getCurrentPlayer().fold();
-				lblMessage.setText("Player "+table.getCurrentPlayerNum()+" folds.");
-				if(table.nonFoldedPlayers()>0)
-					table.iterateCurrentPlayer();
-				else
-					newGame();
+				controller.fold();
 			}
 		};
 		
@@ -131,10 +105,10 @@ public class PokerViewGWT extends Composite implements Observer{
 		layout.setWidgetLeftWidth(btnFold, 57.0, Unit.PX, 81.0, Unit.PX);
 		layout.setWidgetTopHeight(btnFold, 226.0, Unit.PX, 30.0, Unit.PX);
 		
-		image = new com.google.gwt.user.client.ui.Image("cards/back.png");
-		layout.add(image);
-		layout.setWidgetLeftWidth(image, 0.0, Unit.PX, 126.0, Unit.PX);
-		layout.setWidgetTopHeight(image, 58.0, Unit.PX, 156.0, Unit.PX);
+		com1 = new com.google.gwt.user.client.ui.Image("cards/back.png");
+		layout.add(com1);
+		layout.setWidgetLeftWidth(com1, 0.0, Unit.PX, 126.0, Unit.PX);
+		layout.setWidgetTopHeight(com1, 58.0, Unit.PX, 156.0, Unit.PX);
 		
 		Label lblBetAmount = new Label("Bet Amount");
 		lblBetAmount.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
@@ -142,35 +116,35 @@ public class PokerViewGWT extends Composite implements Observer{
 		layout.setWidgetLeftWidth(lblBetAmount, 0.0, Unit.PX, 138.0, Unit.PX);
 		layout.setWidgetTopHeight(lblBetAmount, 170.0, Unit.PX, 18.0, Unit.PX);
 		
-		image_1 = new com.google.gwt.user.client.ui.Image("cards/back.png");
-		layout.add(image_1);
-		layout.setWidgetLeftWidth(image_1, 77.0, Unit.PX, 71.0, Unit.PX);
-		layout.setWidgetTopHeight(image_1, 58.0, Unit.PX, 96.0, Unit.PX);
+		com2 = new com.google.gwt.user.client.ui.Image("cards/back.png");
+		layout.add(com2);
+		layout.setWidgetLeftWidth(com2, 77.0, Unit.PX, 71.0, Unit.PX);
+		layout.setWidgetTopHeight(com2, 58.0, Unit.PX, 96.0, Unit.PX);
 		
-		image_2 = new com.google.gwt.user.client.ui.Image("cards/back.png");
-		layout.add(image_2);
-		layout.setWidgetLeftWidth(image_2, 154.0, Unit.PX, 71.0, Unit.PX);
-		layout.setWidgetTopHeight(image_2, 58.0, Unit.PX, 96.0, Unit.PX);
+		com3 = new com.google.gwt.user.client.ui.Image("cards/back.png");
+		layout.add(com3);
+		layout.setWidgetLeftWidth(com3, 154.0, Unit.PX, 71.0, Unit.PX);
+		layout.setWidgetTopHeight(com3, 58.0, Unit.PX, 96.0, Unit.PX);
 		
-		image_3 = new com.google.gwt.user.client.ui.Image("cards/back.png");
-		layout.add(image_3);
-		layout.setWidgetLeftWidth(image_3, 231.0, Unit.PX, 71.0, Unit.PX);
-		layout.setWidgetTopHeight(image_3, 58.0, Unit.PX, 96.0, Unit.PX);
+		com4 = new com.google.gwt.user.client.ui.Image("cards/back.png");
+		layout.add(com4);
+		layout.setWidgetLeftWidth(com4, 231.0, Unit.PX, 71.0, Unit.PX);
+		layout.setWidgetTopHeight(com4, 58.0, Unit.PX, 96.0, Unit.PX);
 		
-		image_4 = new com.google.gwt.user.client.ui.Image("cards/back.png");
-		layout.add(image_4);
-		layout.setWidgetLeftWidth(image_4, 231.0, Unit.PX, 71.0, Unit.PX);
-		layout.setWidgetTopHeight(image_4, 160.0, Unit.PX, 96.0, Unit.PX);
+		hand1 = new com.google.gwt.user.client.ui.Image("cards/"+table.getCurrentPlayer().getHand().getCard(1).toImageFileName()+".png");
+		layout.add(hand1);
+		layout.setWidgetLeftWidth(hand1, 231.0, Unit.PX, 71.0, Unit.PX);
+		layout.setWidgetTopHeight(hand1, 160.0, Unit.PX, 96.0, Unit.PX);
 		
-		image_5 = new com.google.gwt.user.client.ui.Image("cards/back.png");
-		layout.add(image_5);
-		layout.setWidgetLeftWidth(image_5, 308.0, Unit.PX, 71.0, Unit.PX);
-		layout.setWidgetTopHeight(image_5, 160.0, Unit.PX, 96.0, Unit.PX);
+		hand2 = new com.google.gwt.user.client.ui.Image("cards/"+table.getCurrentPlayer().getHand().getCard(1).toImageFileName()+".png");
+		layout.add(hand2);
+		layout.setWidgetLeftWidth(hand2, 308.0, Unit.PX, 71.0, Unit.PX);
+		layout.setWidgetTopHeight(hand2, 160.0, Unit.PX, 96.0, Unit.PX);
 		
-		image_6 = new com.google.gwt.user.client.ui.Image("cards/back.png");
-		layout.add(image_6);
-		layout.setWidgetLeftWidth(image_6, 308.0, Unit.PX, 71.0, Unit.PX);
-		layout.setWidgetTopHeight(image_6, 58.0, Unit.PX, 96.0, Unit.PX);
+		com5 = new com.google.gwt.user.client.ui.Image("cards/back.png");
+		layout.add(com5);
+		layout.setWidgetLeftWidth(com5, 308.0, Unit.PX, 71.0, Unit.PX);
+		layout.setWidgetTopHeight(com5, 58.0, Unit.PX, 96.0, Unit.PX);
 		
 		Label label = new Label("$");
 		label.setWordWrap(false);
@@ -213,14 +187,79 @@ public class PokerViewGWT extends Composite implements Observer{
 		layout.add(image_7);
 		layout.setWidgetLeftWidth(image_7, 122.0, Unit.PX, 100.0, Unit.PX);
 		layout.setWidgetTopHeight(image_7, 318.0, Unit.PX, 100.0, Unit.PX);
-	}
-	public void clearBet(){
 		
 	}
+	
+	
+	
 	public void newGame(){
+		allIn=false;
+		gameOverShown=false;
+		lblMessage.setText("Welcome to Poker!");
+		clearBet();
+		showNewGameAlert=true;
+	}
+	private void clearBet(){
+		betBox.setValue(0);
+	}
+	private void drawCommunity(){
+		drawCard(table.getCommunity().getCard(0), com1);
+		drawCard(table.getCommunity().getCard(1), com2);
+		drawCard(table.getCommunity().getCard(2), com3);
+		drawCard(table.getCommunity().getCard(3), com4);
+		drawCard(table.getCommunity().getCard(4), com5);
+	}
+	private void drawPlayerHand(){
+		drawCard(table.getCurrentPlayer().getHand().getCard(0), hand1);
+		drawCard(table.getCurrentPlayer().getHand().getCard(1), hand2);
+	}
+	private void drawCard(Card card,com.google.gwt.user.client.ui.Image img){
+		img.setUrl("cards/"+card.toImageFileName()+".png");
+	}
+	public void reDraw(){
+		clearBet();
+		drawPlayerHand();
+		drawCommunity();
+	}
+	
+	
+	
+	
+	
+	@Override
+	public void update(Observable obj, Object hint) {
+		// TODO Auto-generated method stub
 		
 	}
-	public void update(Observable g, Object hint) {
-
+	public PokerController getController() {
+		return controller;
 	}
+	public void setController(PokerController controller) {
+		this.controller = controller;
+	}
+	public void setCallback(GameViewCallback callback) {
+		this.callback = callback;
+	}
+	public Label getLblMessage() {
+		return lblMessage;
+	}
+	public void setLblMessage(Label lblMessage) {
+		this.lblMessage = lblMessage;
+	}
+	public NumberLabel<Integer> getLblMin() {
+		return lblMin;
+	}
+	public void setLblMin(NumberLabel<Integer> lblMin) {
+		this.lblMin = lblMin;
+	}
+	public NumberLabel<Integer> getLblMax() {
+		return lblMax;
+	}
+	public void setLblMax(NumberLabel<Integer> lblMax) {
+		this.lblMax = lblMax;
+	}
+	public IntegerBox getBetBox() {
+		return betBox;
+	}
+	
 }

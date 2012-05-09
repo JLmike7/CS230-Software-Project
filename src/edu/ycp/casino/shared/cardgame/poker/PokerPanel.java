@@ -250,7 +250,7 @@ public class PokerPanel extends JPanel {
 	private void paintCard(Graphics g,Card card,int x,int y){
 		BufferedImage image;
 		try {
-			image = ImageIO.read(new File("cards/"+card.toImageFileName()+".png"));
+			image = ImageIO.read(new File("war/cards/"+card.toImageFileName()+".png"));
 			g.drawImage(image,x,y,null);
 		}
 	    catch (IOException ex) {
