@@ -27,4 +27,7 @@ public class Wallet {
 		else
 			return false;
 	}
+	public void setBalance(int x){
+		balance=x;
+	}
 }
