@@ -11,7 +11,8 @@ import edu.ycp.casino.client.MainMenuGWT.MainMenuEvents;
 import edu.ycp.casino.shared.Player;
 import edu.ycp.casino.shared.Roulette;
 import edu.ycp.casino.shared.Slots;
-import edu.ycp.casino.shared.SlotsController;
+import edu.ycp.casino.shared.blackjack.Blackjack;
+import edu.ycp.casino.shared.blackjack.BlackjackController;
 import edu.ycp.casino.shared.cardgame.poker.Table;
 
 /**
@@ -22,9 +23,22 @@ public class Casino implements EntryPoint, MainMenuEvents, GameViewCallback {
 
 	private MainMenuGWT mainMenu;
 	private Widget currentView;
+	
 	private SlotsViewGWT slotsView;
+	private Slots slotsModel;
+	private SlotsController slotsController;
+	
 	private RouletteView rouletteView;
+	private Roulette rouletteModel;
+	private RouletteController rouletteController;
+	
+	private BlackjackViewGWT blackJackview;
+	private Blackjack blackJackModel;
+	private BlackjackController blackJackController;
+	
 	private PokerViewGWT pokerView;
+	private Table pokerTable;
+	private PokerController pokerController;
 
 	
 	/**
@@ -38,7 +52,8 @@ public class Casino implements EntryPoint, MainMenuEvents, GameViewCallback {
 		player.getWallet().setBalance(1500);
 		
 		initSlotsView(player);
-		initRouletteView();
+		initRouletteView(player);
+		initBlackJackView();
 		initPokerView(player);
 		
 		selectView(mainMenu);
@@ -47,19 +62,19 @@ public class Casino implements EntryPoint, MainMenuEvents, GameViewCallback {
 	
 	//Methods to set up the 4 various MVC GUI's for games
 	private void initSlotsView(Player p) {
-		Slots model = new Slots();
-		SlotsController controller = new SlotsController();
+		slotsModel = new Slots();
+		slotsController = new SlotsController();
 		slotsView = new SlotsViewGWT();
 		
-		model.setPlayer(p);
-		slotsView.setModel(model);
-		controller.setModel(model);
-		controller.setView(slotsView);
-		slotsView.setController(controller);
+		slotsModel.setPlayer(p);
+		slotsView.setModel(slotsModel);
+		slotsController.setModel(slotsModel);
+		slotsController.setView(slotsView);
+		slotsView.setController(slotsController);
 		slotsView.setCallback(this);
-		model.spin();
+		slotsModel.spin();
 		
-		slotsView.update(model, null);
+		slotsView.update(slotsModel, null);
 	}
 	//Methods to set up the 4 various MVC GUI's for games
 	private void initPokerView(Player p) {
@@ -74,18 +89,35 @@ public class Casino implements EntryPoint, MainMenuEvents, GameViewCallback {
 		pokerView.update(pokerTable, null);
 	}
 	
-	private void initRouletteView() {
-		RouletteView rouletteView = new RouletteView();
-		Roulette model = new Roulette();			
-		RouletteController controller = new RouletteController();	
+	private void initRouletteView(Player p) {
+		rouletteView = new RouletteView();
+		rouletteModel = new Roulette();			
+		rouletteController = new RouletteController();	
 		
-		rouletteView.setModel(model); 			
-		controller.setModel(model);			
-		controller.setView(rouletteView); 			
-		rouletteView.setController(controller);
+		rouletteModel.setPlayer(p);
+		rouletteView.setModel(rouletteModel); 			
+		rouletteController.setModel(rouletteModel);			
+		rouletteController.setView(rouletteView); 			
+		rouletteView.setController(rouletteController);
+		rouletteView.setCallback(this);
+		
+	}
+	
+
+	private void initBlackJackView()
+	{
+		blackJackModel = new Blackjack();
+		blackJackview = new BlackjackViewGWT();
+		blackJackController = new BlackjackController();
+		
+		blackJackview.setModel(blackJackModel);
+		blackJackController.setModel(blackJackModel);
+		blackJackController.setView(blackJackview);
+		blackJackview.setController(blackJackController);
+		blackJackview.setCallback(this);
 	}
 
-	
+
 	//Method to change view currently being displayed
 	private void selectView(Widget view) {
 		if (currentView != null) {
@@ -100,26 +132,31 @@ public class Casino implements EntryPoint, MainMenuEvents, GameViewCallback {
 	@Override
 	public void slotsChosen() {
 		selectView(slotsView);
+		slotsView.update(slotsModel, null);
 	}
 
 	@Override
 	public void rouletteChosen() {
 		selectView(rouletteView);
+		rouletteView.update(rouletteModel, null);
 	}
 
 	@Override
 	public void pokerChosen() {
-		// TODO Auto-generated method stub	
+		selectView(pokerView);
+		pokerView.update(pokerTable, null);
 	}
 
 	@Override
 	public void blackjackChosen() {
-		// TODO Auto-generated method stub
+		selectView(blackJackview);
+		blackJackview.update(blackJackModel, null);
 	}
 
 	@Override
 	public void chooseMainMenu() {
 		// TODO Auto-generated method stub
 		selectView(mainMenu);
+		System.out.print("Change view");
 	}
 }

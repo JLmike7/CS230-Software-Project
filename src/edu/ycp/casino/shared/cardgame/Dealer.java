@@ -65,4 +65,9 @@ public class Dealer {
 		this.bettingRound = bettingRound;
 	}
 	
+	//getting dealer to draw for blackjack
+	public void dealTo(Player p){
+		p.getHand().addCard(this.deck.drawCard());
+	}
+	
 }

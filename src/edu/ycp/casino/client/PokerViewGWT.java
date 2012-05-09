@@ -1,40 +1,20 @@
 package edu.ycp.casino.client;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Image;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
-import java.awt.image.ImageProducer;
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-
-import javax.imageio.ImageIO;
-import javax.swing.JPanel;
-
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.LayoutPanel;
-
-import edu.ycp.casino.shared.Observable;
-import edu.ycp.casino.shared.Observer;
-import edu.ycp.casino.shared.Player;
-import edu.ycp.casino.shared.cardgame.Card;
-import edu.ycp.casino.shared.cardgame.poker.Table;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.IntegerBox;
-import com.google.gwt.user.client.ui.AbsolutePanel;
-import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.IntegerBox;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.NumberLabel;
+
+import edu.ycp.casino.shared.Observable;
+import edu.ycp.casino.shared.Observer;
+import edu.ycp.casino.shared.cardgame.Card;
+import edu.ycp.casino.shared.cardgame.poker.Table;
 
 public class PokerViewGWT extends Composite implements Observer{
 
@@ -60,7 +40,7 @@ public class PokerViewGWT extends Composite implements Observer{
 	
 	// constructor
 	public PokerViewGWT(Table _table) {
-		this.table=_table;
+		this.table = _table;
 		LayoutPanel layout=new LayoutPanel();
 		initWidget(layout);
 		layout.setSize("489px", "461px");
@@ -183,10 +163,10 @@ public class PokerViewGWT extends Composite implements Observer{
 		layout.setWidgetLeftWidth(betBox, 10.0, Unit.PX, 128.0, Unit.PX);
 		layout.setWidgetTopHeight(betBox, 194.0, Unit.PX, 26.0, Unit.PX);
 		
-		com.google.gwt.user.client.ui.Image image_7 = new com.google.gwt.user.client.ui.Image((String) null);
-		layout.add(image_7);
-		layout.setWidgetLeftWidth(image_7, 122.0, Unit.PX, 100.0, Unit.PX);
-		layout.setWidgetTopHeight(image_7, 318.0, Unit.PX, 100.0, Unit.PX);
+//		com.google.gwt.user.client.ui.Image image_7 = new com.google.gwt.user.client.ui.Image((String) null);
+//		layout.add(image_7);
+//		layout.setWidgetLeftWidth(image_7, 122.0, Unit.PX, 100.0, Unit.PX);
+//		layout.setWidgetTopHeight(image_7, 318.0, Unit.PX, 100.0, Unit.PX);
 		
 	}
 	
