@@ -27,12 +27,12 @@ public class HandComperator {
 	
 	private Player getPlayerFromSeat(ArrayList<Player> players,int seatNum){
 		for(Player player : players){
-			System.out.println("Winner's seat: "+seatNum+".  Player's: "+player.getSeatNum());
 			if(player.getSeatNum() == seatNum)
 				return player;
 		}
 		return null;
 	}
+	
 	private Hand makePossibleHand(ArrayList<Card> community,Player player,int pos1,int pos2){
 		//Set up the possible hand.
 		Hand hand=new Hand(community,player.getSeatNum());
